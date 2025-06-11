@@ -1,0 +1,222 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: white;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#1f77b4", "fixed": true, "font": {"color": "black"}, "id": "Technology", "label": "Technology", "shape": "dot", "size": 40, "title": "Technology", "x": 400.0, "y": 0.0}, {"color": "#ff7f0e", "fixed": true, "font": {"color": "black"}, "id": "E-commerce", "label": "E-commerce", "shape": "dot", "size": 40, "title": "E-commerce", "x": 369.5518130045147, "y": 153.0733729460359}, {"color": "#2ca02c", "fixed": true, "font": {"color": "black"}, "id": "Consumer Goods", "label": "Consumer Goods", "shape": "dot", "size": 40, "title": "Consumer Goods", "x": 282.842712474619, "y": 282.84271247461896}, {"color": "#d62728", "fixed": true, "font": {"color": "black"}, "id": "Management Consulting", "label": "Management Consulting", "shape": "dot", "size": 40, "title": "Management Consulting", "x": 153.07337294603593, "y": 369.5518130045147}, {"color": "#9467bd", "fixed": true, "font": {"color": "black"}, "id": "Pharmaceuticals \u0026 Healthcare", "label": "Pharmaceuticals \u0026 Healthcare", "shape": "dot", "size": 40, "title": "Pharmaceuticals \u0026 Healthcare", "x": 2.4492935982947064e-14, "y": 400.0}, {"color": "#8c564b", "fixed": true, "font": {"color": "black"}, "id": "Media \u0026 Entertainment", "label": "Media \u0026 Entertainment", "shape": "dot", "size": 40, "title": "Media \u0026 Entertainment", "x": -153.0733729460359, "y": 369.5518130045147}, {"color": "#e377c2", "fixed": true, "font": {"color": "black"}, "id": "Education \u0026 Research", "label": "Education \u0026 Research", "shape": "dot", "size": 40, "title": "Education \u0026 Research", "x": -282.84271247461896, "y": 282.842712474619}, {"color": "#7f7f7f", "fixed": true, "font": {"color": "black"}, "id": "Financial Services", "label": "Financial Services", "shape": "dot", "size": 40, "title": "Financial Services", "x": -369.5518130045147, "y": 153.07337294603596}, {"color": "#bcbd22", "fixed": true, "font": {"color": "black"}, "id": "Energy \u0026 Industrial", "label": "Energy \u0026 Industrial", "shape": "dot", "size": 40, "title": "Energy \u0026 Industrial", "x": -400.0, "y": 4.898587196589413e-14}, {"color": "#17becf", "fixed": true, "font": {"color": "black"}, "id": "Other / Freelance / Startups", "label": "Other / Freelance / Startups", "shape": "dot", "size": 40, "title": "Other / Freelance / Startups", "x": -369.5518130045147, "y": -153.07337294603587}, {"color": "#1f77b4", "fixed": true, "font": {"color": "black"}, "id": "Nonprofit \u0026 Foundations", "label": "Nonprofit \u0026 Foundations", "shape": "dot", "size": 40, "title": "Nonprofit \u0026 Foundations", "x": -282.8427124746191, "y": -282.84271247461896}, {"color": "#aec7e8", "fixed": true, "font": {"color": "black"}, "id": "Telecommunications", "label": "Telecommunications", "shape": "dot", "size": 40, "title": "Telecommunications", "x": -153.07337294603613, "y": -369.5518130045146}, {"color": "#ff7f0e", "fixed": true, "font": {"color": "black"}, "id": "Government \u0026 Public Sector", "label": "Government \u0026 Public Sector", "shape": "dot", "size": 40, "title": "Government \u0026 Public Sector", "x": -7.347880794884119e-14, "y": -400.0}, {"color": "#ffbb78", "fixed": true, "font": {"color": "black"}, "id": "Insurance", "label": "Insurance", "shape": "dot", "size": 40, "title": "Insurance", "x": 153.073372946036, "y": -369.55181300451466}, {"color": "#2ca02c", "fixed": true, "font": {"color": "black"}, "id": "Architecture \u0026 Urban Design", "label": "Architecture \u0026 Urban Design", "shape": "dot", "size": 40, "title": "Architecture \u0026 Urban Design", "x": 282.84271247461896, "y": -282.8427124746191}, {"color": "#98df8a", "fixed": true, "font": {"color": "black"}, "id": "Recruitment \u0026 Professional Services", "label": "Recruitment \u0026 Professional Services", "shape": "dot", "size": 40, "title": "Recruitment \u0026 Professional Services", "x": 369.5518130045146, "y": -153.07337294603616}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Audible", "label": "Audible", "shape": "dot", "size": 20, "title": "Audible"}, {"color": "#ff7f0e", "font": {"color": "black"}, "id": "Amazon", "label": "Amazon", "shape": "dot", "size": 20, "title": "Amazon"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Meta", "label": "Meta", "shape": "dot", "size": 20, "title": "Meta"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Google", "label": "Google", "shape": "dot", "size": 20, "title": "Google"}, {"color": "#2ca02c", "font": {"color": "black"}, "id": "Apple", "label": "Apple", "shape": "dot", "size": 20, "title": "Apple"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Microsoft", "label": "Microsoft", "shape": "dot", "size": 20, "title": "Microsoft"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Amazon Web Services (AWS)", "label": "Amazon Web Services (AWS)", "shape": "dot", "size": 20, "title": "Amazon Web Services (AWS)"}, {"color": "#d62728", "font": {"color": "black"}, "id": "McKinsey \u0026 Company", "label": "McKinsey \u0026 Company", "shape": "dot", "size": 20, "title": "McKinsey \u0026 Company"}, {"color": "#d62728", "font": {"color": "black"}, "id": "Boston Consulting Group (BCG)", "label": "Boston Consulting Group (BCG)", "shape": "dot", "size": 20, "title": "Boston Consulting Group (BCG)"}, {"color": "#d62728", "font": {"color": "black"}, "id": "ZS", "label": "ZS", "shape": "dot", "size": 20, "title": "ZS"}, {"color": "#9467bd", "font": {"color": "black"}, "id": "Merck", "label": "Merck", "shape": "dot", "size": 20, "title": "Merck"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "LinkedIn", "label": "LinkedIn", "shape": "dot", "size": 20, "title": "LinkedIn"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "PayPal", "label": "PayPal", "shape": "dot", "size": 20, "title": "PayPal"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Genpact", "label": "Genpact", "shape": "dot", "size": 20, "title": "Genpact"}, {"color": "#8c564b", "font": {"color": "black"}, "id": "Snap Inc.", "label": "Snap Inc.", "shape": "dot", "size": 20, "title": "Snap Inc."}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "DoorDash", "label": "DoorDash", "shape": "dot", "size": 20, "title": "DoorDash"}, {"color": "#e377c2", "font": {"color": "black"}, "id": "Cornell University", "label": "Cornell University", "shape": "dot", "size": 20, "title": "Cornell University"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "Tower Research Capital", "label": "Tower Research Capital", "shape": "dot", "size": 20, "title": "Tower Research Capital"}, {"color": "#ff7f0e", "font": {"color": "black"}, "id": "Zepto", "label": "Zepto", "shape": "dot", "size": 20, "title": "Zepto"}, {"color": "#e377c2", "font": {"color": "black"}, "id": "Study Hall Educational Foundation (SHEF)", "label": "Study Hall Educational Foundation (SHEF)", "shape": "dot", "size": 20, "title": "Study Hall Educational Foundation (SHEF)"}, {"color": "#d62728", "font": {"color": "black"}, "id": "Kearney", "label": "Kearney", "shape": "dot", "size": 20, "title": "Kearney"}, {"color": "#2ca02c", "font": {"color": "black"}, "id": "Philip Morris International", "label": "Philip Morris International", "shape": "dot", "size": 20, "title": "Philip Morris International"}, {"color": "#bcbd22", "font": {"color": "black"}, "id": "ExxonMobil", "label": "ExxonMobil", "shape": "dot", "size": 20, "title": "ExxonMobil"}, {"color": "#17becf", "font": {"color": "black"}, "id": "Stealth AI Startup", "label": "Stealth AI Startup", "shape": "dot", "size": 20, "title": "Stealth AI Startup"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "Deutsche Bank", "label": "Deutsche Bank", "shape": "dot", "size": 20, "title": "Deutsche Bank"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "The Akanksha Foundation", "label": "The Akanksha Foundation", "shape": "dot", "size": 20, "title": "The Akanksha Foundation"}, {"color": "#d62728", "font": {"color": "black"}, "id": "Bain \u0026 Company", "label": "Bain \u0026 Company", "shape": "dot", "size": 20, "title": "Bain \u0026 Company"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "IDFC FIRST Bank", "label": "IDFC FIRST Bank", "shape": "dot", "size": 20, "title": "IDFC FIRST Bank"}, {"color": "#d62728", "font": {"color": "black"}, "id": "Accenture", "label": "Accenture", "shape": "dot", "size": 20, "title": "Accenture"}, {"color": "#bcbd22", "font": {"color": "black"}, "id": "Shell", "label": "Shell", "shape": "dot", "size": 20, "title": "Shell"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "IBM", "label": "IBM", "shape": "dot", "size": 20, "title": "IBM"}, {"color": "#8c564b", "font": {"color": "black"}, "id": "Bloomberg", "label": "Bloomberg", "shape": "dot", "size": 20, "title": "Bloomberg"}, {"color": "#9467bd", "font": {"color": "black"}, "id": "Syensqo", "label": "Syensqo", "shape": "dot", "size": 20, "title": "Syensqo"}, {"color": "#9467bd", "font": {"color": "black"}, "id": "Novartis", "label": "Novartis", "shape": "dot", "size": 20, "title": "Novartis"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Autodesk", "label": "Autodesk", "shape": "dot", "size": 20, "title": "Autodesk"}, {"color": "#aec7e8", "font": {"color": "black"}, "id": "Verizon", "label": "Verizon", "shape": "dot", "size": 20, "title": "Verizon"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "JPMorgan Chase \u0026 Co.", "label": "JPMorgan Chase \u0026 Co.", "shape": "dot", "size": 20, "title": "JPMorgan Chase \u0026 Co."}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "PowerToFly", "label": "PowerToFly", "shape": "dot", "size": 20, "title": "PowerToFly"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "FitBudd", "label": "FitBudd", "shape": "dot", "size": 20, "title": "FitBudd"}, {"color": "#e377c2", "font": {"color": "black"}, "id": "Indian Institute of Technology, Kanpur", "label": "Indian Institute of Technology, Kanpur", "shape": "dot", "size": 20, "title": "Indian Institute of Technology, Kanpur"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "American Express", "label": "American Express", "shape": "dot", "size": 20, "title": "American Express"}, {"color": "#17becf", "font": {"color": "black"}, "id": "Freelance", "label": "Freelance", "shape": "dot", "size": 20, "title": "Freelance"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "UBS", "label": "UBS", "shape": "dot", "size": 20, "title": "UBS"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "Commonwealth Bank", "label": "Commonwealth Bank", "shape": "dot", "size": 20, "title": "Commonwealth Bank"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "Kredivo Group", "label": "Kredivo Group", "shape": "dot", "size": 20, "title": "Kredivo Group"}, {"color": "#bcbd22", "font": {"color": "black"}, "id": "SUEZ", "label": "SUEZ", "shape": "dot", "size": 20, "title": "SUEZ"}, {"color": "#ff7f0e", "font": {"color": "black"}, "id": "Government of India", "label": "Government of India", "shape": "dot", "size": 20, "title": "Government of India"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "FusionEngage", "label": "FusionEngage", "shape": "dot", "size": 20, "title": "FusionEngage"}, {"color": "#ff7f0e", "font": {"color": "black"}, "id": "OnMyCanvas", "label": "OnMyCanvas", "shape": "dot", "size": 20, "title": "OnMyCanvas"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Yaak", "label": "Yaak", "shape": "dot", "size": 20, "title": "Yaak"}, {"color": "#ff7f0e", "font": {"color": "black"}, "id": "Inxeption", "label": "Inxeption", "shape": "dot", "size": 20, "title": "Inxeption"}, {"color": "#17becf", "font": {"color": "black"}, "id": "Brasserie BFM SA", "label": "Brasserie BFM SA", "shape": "dot", "size": 20, "title": "Brasserie BFM SA"}, {"color": "#ff7f0e", "font": {"color": "black"}, "id": "Meesho", "label": "Meesho", "shape": "dot", "size": 20, "title": "Meesho"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "NVIDIA", "label": "NVIDIA", "shape": "dot", "size": 20, "title": "NVIDIA"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "LSEG (London Stock Exchange Group)", "label": "LSEG (London Stock Exchange Group)", "shape": "dot", "size": 20, "title": "LSEG (London Stock Exchange Group)"}, {"color": "#d62728", "font": {"color": "black"}, "id": "Consultancy Services", "label": "Consultancy Services", "shape": "dot", "size": 20, "title": "Consultancy Services"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "Aravali Asset Management", "label": "Aravali Asset Management", "shape": "dot", "size": 20, "title": "Aravali Asset Management"}, {"color": "#bcbd22", "font": {"color": "black"}, "id": "Lincoln Electric India", "label": "Lincoln Electric India", "shape": "dot", "size": 20, "title": "Lincoln Electric India"}, {"color": "#8c564b", "font": {"color": "black"}, "id": "FanDuel", "label": "FanDuel", "shape": "dot", "size": 20, "title": "FanDuel"}, {"color": "#ffbb78", "font": {"color": "black"}, "id": "HDFC Life", "label": "HDFC Life", "shape": "dot", "size": 20, "title": "HDFC Life"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "State Street Global Advisors", "label": "State Street Global Advisors", "shape": "dot", "size": 20, "title": "State Street Global Advisors"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "Dexter Capital Advisors", "label": "Dexter Capital Advisors", "shape": "dot", "size": 20, "title": "Dexter Capital Advisors"}, {"color": "#9467bd", "font": {"color": "black"}, "id": "Kenvue", "label": "Kenvue", "shape": "dot", "size": 20, "title": "Kenvue"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "Northern Trust Corporation", "label": "Northern Trust Corporation", "shape": "dot", "size": 20, "title": "Northern Trust Corporation"}, {"color": "#2ca02c", "font": {"color": "black"}, "id": "AUR - Architecture Urbanism Research", "label": "AUR - Architecture Urbanism Research", "shape": "dot", "size": 20, "title": "AUR - Architecture Urbanism Research"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Bumble", "label": "Bumble", "shape": "dot", "size": 20, "title": "Bumble"}, {"color": "#2ca02c", "font": {"color": "black"}, "id": "LazyGardener", "label": "LazyGardener", "shape": "dot", "size": 20, "title": "LazyGardener"}, {"color": "#9467bd", "font": {"color": "black"}, "id": "Medikabazaar", "label": "Medikabazaar", "shape": "dot", "size": 20, "title": "Medikabazaar"}, {"color": "#2ca02c", "font": {"color": "black"}, "id": "Starbucks", "label": "Starbucks", "shape": "dot", "size": 20, "title": "Starbucks"}, {"color": "#e377c2", "font": {"color": "black"}, "id": "AKS University, Satna (M.P.)", "label": "AKS University, Satna (M.P.)", "shape": "dot", "size": 20, "title": "AKS University, Satna (M.P.)"}, {"color": "#e377c2", "font": {"color": "black"}, "id": "Smaart Classes", "label": "Smaart Classes", "shape": "dot", "size": 20, "title": "Smaart Classes"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "DEWI Foundation", "label": "DEWI Foundation", "shape": "dot", "size": 20, "title": "DEWI Foundation"}, {"color": "#d62728", "font": {"color": "black"}, "id": "Innolution, LLC", "label": "Innolution, LLC", "shape": "dot", "size": 20, "title": "Innolution, LLC"}, {"color": "#9467bd", "font": {"color": "black"}, "id": "Optum", "label": "Optum", "shape": "dot", "size": 20, "title": "Optum"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "AINE AI", "label": "AINE AI", "shape": "dot", "size": 20, "title": "AINE AI"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "SecurityScorecard", "label": "SecurityScorecard", "shape": "dot", "size": 20, "title": "SecurityScorecard"}, {"color": "#17becf", "font": {"color": "black"}, "id": "UnShaadi", "label": "UnShaadi", "shape": "dot", "size": 20, "title": "UnShaadi"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Cisco", "label": "Cisco", "shape": "dot", "size": 20, "title": "Cisco"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Stamford AI Consulting", "label": "Stamford AI Consulting", "shape": "dot", "size": 20, "title": "Stamford AI Consulting"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Marvell Technology", "label": "Marvell Technology", "shape": "dot", "size": 20, "title": "Marvell Technology"}, {"color": "#98df8a", "font": {"color": "black"}, "id": "Executive Placement Network", "label": "Executive Placement Network", "shape": "dot", "size": 20, "title": "Executive Placement Network"}, {"color": "#bcbd22", "font": {"color": "black"}, "id": "shikhar stone crushers/", "label": "shikhar stone crushers/", "shape": "dot", "size": 20, "title": "shikhar stone crushers/"}, {"color": "#d62728", "font": {"color": "black"}, "id": "RedSeer", "label": "RedSeer", "shape": "dot", "size": 20, "title": "RedSeer"}, {"color": "#bcbd22", "font": {"color": "black"}, "id": "PPG", "label": "PPG", "shape": "dot", "size": 20, "title": "PPG"}, {"color": "#ffbb78", "font": {"color": "black"}, "id": "Chubb", "label": "Chubb", "shape": "dot", "size": 20, "title": "Chubb"}, {"color": "#d62728", "font": {"color": "black"}, "id": "TopSkill Managment Consulting LLP", "label": "TopSkill Managment Consulting LLP", "shape": "dot", "size": 20, "title": "TopSkill Managment Consulting LLP"}, {"color": "#d62728", "font": {"color": "black"}, "id": "Capabilities Limited", "label": "Capabilities Limited", "shape": "dot", "size": 20, "title": "Capabilities Limited"}, {"color": "#17becf", "font": {"color": "black"}, "id": "HiThrive", "label": "HiThrive", "shape": "dot", "size": 20, "title": "HiThrive"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Rayonsoft Technologies Inc", "label": "Rayonsoft Technologies Inc", "shape": "dot", "size": 20, "title": "Rayonsoft Technologies Inc"}, {"color": "#ff7f0e", "font": {"color": "black"}, "id": "Infoparks Kerala", "label": "Infoparks Kerala", "shape": "dot", "size": 20, "title": "Infoparks Kerala"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Alleyoop", "label": "Alleyoop", "shape": "dot", "size": 20, "title": "Alleyoop"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "Spectrum Equity", "label": "Spectrum Equity", "shape": "dot", "size": 20, "title": "Spectrum Equity"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "VMware", "label": "VMware", "shape": "dot", "size": 20, "title": "VMware"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "Rippling", "label": "Rippling", "shape": "dot", "size": 20, "title": "Rippling"}, {"color": "#9467bd", "font": {"color": "black"}, "id": "Dexcom", "label": "Dexcom", "shape": "dot", "size": 20, "title": "Dexcom"}, {"color": "#7f7f7f", "font": {"color": "black"}, "id": "Graviton Research Capital LLP", "label": "Graviton Research Capital LLP", "shape": "dot", "size": 20, "title": "Graviton Research Capital LLP"}, {"color": "#1f77b4", "font": {"color": "black"}, "id": "TechSur Solutions", "label": "TechSur Solutions", "shape": "dot", "size": 20, "title": "TechSur Solutions"}]);
+                  edges = new vis.DataSet([{"from": "Technology", "to": "Audible", "value": 21}, {"from": "E-commerce", "to": "Amazon", "value": 17}, {"from": "Technology", "to": "Meta", "value": 12}, {"from": "Technology", "to": "Google", "value": 6}, {"from": "Consumer Goods", "to": "Apple", "value": 5}, {"from": "Technology", "to": "Microsoft", "value": 4}, {"from": "Technology", "to": "Amazon Web Services (AWS)", "value": 4}, {"from": "Management Consulting", "to": "McKinsey \u0026 Company", "value": 4}, {"from": "Management Consulting", "to": "Boston Consulting Group (BCG)", "value": 4}, {"from": "Management Consulting", "to": "ZS", "value": 3}, {"from": "Pharmaceuticals \u0026 Healthcare", "to": "Merck", "value": 3}, {"from": "Technology", "to": "LinkedIn", "value": 3}, {"from": "Technology", "to": "PayPal", "value": 3}, {"from": "Technology", "to": "Genpact", "value": 3}, {"from": "Media \u0026 Entertainment", "to": "Snap Inc.", "value": 3}, {"from": "Technology", "to": "DoorDash", "value": 3}, {"from": "Education \u0026 Research", "to": "Cornell University", "value": 3}, {"from": "Financial Services", "to": "Tower Research Capital", "value": 3}, {"from": "E-commerce", "to": "Zepto", "value": 2}, {"from": "Education \u0026 Research", "to": "Study Hall Educational Foundation (SHEF)", "value": 2}, {"from": "Management Consulting", "to": "Kearney", "value": 2}, {"from": "Consumer Goods", "to": "Philip Morris International", "value": 2}, {"from": "Energy \u0026 Industrial", "to": "ExxonMobil", "value": 2}, {"from": "Other / Freelance / Startups", "to": "Stealth AI Startup", "value": 2}, {"from": "Financial Services", "to": "Deutsche Bank", "value": 2}, {"from": "Nonprofit \u0026 Foundations", "to": "The Akanksha Foundation", "value": 2}, {"from": "Management Consulting", "to": "Bain \u0026 Company", "value": 2}, {"from": "Financial Services", "to": "IDFC FIRST Bank", "value": 2}, {"from": "Management Consulting", "to": "Accenture", "value": 2}, {"from": "Energy \u0026 Industrial", "to": "Shell", "value": 2}, {"from": "Technology", "to": "IBM", "value": 2}, {"from": "Media \u0026 Entertainment", "to": "Bloomberg", "value": 2}, {"from": "Pharmaceuticals \u0026 Healthcare", "to": "Syensqo", "value": 2}, {"from": "Pharmaceuticals \u0026 Healthcare", "to": "Novartis", "value": 2}, {"from": "Technology", "to": "Autodesk", "value": 2}, {"from": "Telecommunications", "to": "Verizon", "value": 2}, {"from": "Financial Services", "to": "JPMorgan Chase \u0026 Co.", "value": 2}, {"from": "Technology", "to": "PowerToFly", "value": 2}, {"from": "Technology", "to": "FitBudd", "value": 2}, {"from": "Education \u0026 Research", "to": "Indian Institute of Technology, Kanpur", "value": 2}, {"from": "Financial Services", "to": "American Express", "value": 2}, {"from": "Other / Freelance / Startups", "to": "Freelance", "value": 2}, {"from": "Financial Services", "to": "UBS", "value": 2}, {"from": "Financial Services", "to": "Commonwealth Bank", "value": 2}, {"from": "Financial Services", "to": "Kredivo Group", "value": 2}, {"from": "Energy \u0026 Industrial", "to": "SUEZ", "value": 1}, {"from": "Government \u0026 Public Sector", "to": "Government of India", "value": 1}, {"from": "Technology", "to": "FusionEngage", "value": 1}, {"from": "E-commerce", "to": "OnMyCanvas", "value": 1}, {"from": "Technology", "to": "Yaak", "value": 1}, {"from": "E-commerce", "to": "Inxeption", "value": 1}, {"from": "Other / Freelance / Startups", "to": "Brasserie BFM SA", "value": 1}, {"from": "E-commerce", "to": "Meesho", "value": 1}, {"from": "Technology", "to": "NVIDIA", "value": 1}, {"from": "Financial Services", "to": "LSEG (London Stock Exchange Group)", "value": 1}, {"from": "Management Consulting", "to": "Consultancy Services", "value": 1}, {"from": "Financial Services", "to": "Aravali Asset Management", "value": 1}, {"from": "Energy \u0026 Industrial", "to": "Lincoln Electric India", "value": 1}, {"from": "Media \u0026 Entertainment", "to": "FanDuel", "value": 1}, {"from": "Insurance", "to": "HDFC Life", "value": 1}, {"from": "Financial Services", "to": "State Street Global Advisors", "value": 1}, {"from": "Financial Services", "to": "Dexter Capital Advisors", "value": 1}, {"from": "Pharmaceuticals \u0026 Healthcare", "to": "Kenvue", "value": 1}, {"from": "Financial Services", "to": "Northern Trust Corporation", "value": 1}, {"from": "Architecture \u0026 Urban Design", "to": "AUR - Architecture Urbanism Research", "value": 1}, {"from": "Technology", "to": "Bumble", "value": 1}, {"from": "Consumer Goods", "to": "LazyGardener", "value": 1}, {"from": "Pharmaceuticals \u0026 Healthcare", "to": "Medikabazaar", "value": 1}, {"from": "Consumer Goods", "to": "Starbucks", "value": 1}, {"from": "Education \u0026 Research", "to": "AKS University, Satna (M.P.)", "value": 1}, {"from": "Education \u0026 Research", "to": "Smaart Classes", "value": 1}, {"from": "Nonprofit \u0026 Foundations", "to": "DEWI Foundation", "value": 1}, {"from": "Management Consulting", "to": "Innolution, LLC", "value": 1}, {"from": "Pharmaceuticals \u0026 Healthcare", "to": "Optum", "value": 1}, {"from": "Technology", "to": "AINE AI", "value": 1}, {"from": "Technology", "to": "SecurityScorecard", "value": 1}, {"from": "Other / Freelance / Startups", "to": "UnShaadi", "value": 1}, {"from": "Technology", "to": "Cisco", "value": 1}, {"from": "Technology", "to": "Stamford AI Consulting", "value": 1}, {"from": "Technology", "to": "Marvell Technology", "value": 1}, {"from": "Recruitment \u0026 Professional Services", "to": "Executive Placement Network", "value": 1}, {"from": "Energy \u0026 Industrial", "to": "shikhar stone crushers/", "value": 1}, {"from": "Management Consulting", "to": "RedSeer", "value": 1}, {"from": "Energy \u0026 Industrial", "to": "PPG", "value": 1}, {"from": "Insurance", "to": "Chubb", "value": 1}, {"from": "Management Consulting", "to": "TopSkill Managment Consulting LLP", "value": 1}, {"from": "Management Consulting", "to": "Capabilities Limited", "value": 1}, {"from": "Other / Freelance / Startups", "to": "HiThrive", "value": 1}, {"from": "Technology", "to": "Rayonsoft Technologies Inc", "value": 1}, {"from": "Government \u0026 Public Sector", "to": "Infoparks Kerala", "value": 1}, {"from": "Technology", "to": "Alleyoop", "value": 1}, {"from": "Financial Services", "to": "Spectrum Equity", "value": 1}, {"from": "Technology", "to": "VMware", "value": 1}, {"from": "Technology", "to": "Rippling", "value": 1}, {"from": "Pharmaceuticals \u0026 Healthcare", "to": "Dexcom", "value": 1}, {"from": "Financial Services", "to": "Graviton Research Capital LLP", "value": 1}, {"from": "Technology", "to": "TechSur Solutions", "value": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"solver": "forceAtlas2Based", "forceAtlas2Based": {"gravitationalConstant": -50, "centralGravity": 0.01, "springLength": 150, "springConstant": 0.08}, "stabilization": {"iterations": 150}}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
